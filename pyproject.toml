@@ -1,0 +1,38 @@
+[project]
+name = "smart-expense-orchestrator"
+version = "0.1.0"
+description = "High-performance backend microservice for async receipt processing."
+authors = [{name = "Your Name", email = "you@example.com"}]
+requires-python = ">=3.11"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+exclude = [
+    ".git",
+    "alembic",
+    ".mypy_cache",
+    ".pytest_cache",
+    ".ruff_cache",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"] # Pyflakes, pycodestyle, isort
+ignore = []
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false # Disabled strictly for scaffold, can enable later
+exclude = ["alembic", "tests"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+env = [
+    "OPENAI_API_KEY=test_key",
+    "DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/expense_db_test",
+    "REDIS_URL=redis://redis:6379/1"
+]
