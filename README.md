@@ -2,6 +2,9 @@
 
 A high-performance backend microservice designed to asynchronously process receipt uploads and extract structured financial data using OpenAI's GPT-4o.
 
+### Live Demo
+![API Demo](./demo.webp)
+
 ## Features
 - **Asynchronous Ingestion:** Upload endpoints immediately return a task ID, decoupling the ingestion phase from heavy LLM processing.
 - **Robust Background Processing:** Built with Celery and Redis to handle concurrent task processing and retries.
