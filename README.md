@@ -2,6 +2,7 @@
 
 A high-performance backend microservice designed to asynchronously process receipt uploads and extract structured financial data using OpenAI's GPT-4o.
 
+[Read the Full Architecture Case Study](./case_study.md)
 ### Live Demo
 ![API Demo](./demo.webp)
 
