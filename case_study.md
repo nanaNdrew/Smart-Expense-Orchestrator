@@ -15,7 +15,7 @@ When a client uploads a receipt, the FastAPI endpoint immediately accepts the pa
 ### 2. Robust Background Processing
 The heavy lifting is delegated to a distributed worker system. Redis acts as the message broker, placing the extraction job into a queue. Celery worker nodes pick up these jobs concurrently. This design ensures that if the LLM API experiences throttling or downtime, the jobs can be retried without dropping client requests or blocking web server resources.
 
-### 3. Deterministic AI Extraction
+### 3. Schema-Constrained Extraction
 A major challenge with generative AI is the unpredictability of output structures. To resolve this, the system enforces strict data contracts. GPT-4o is queried using its structured output capabilities, and the resulting JSON payload is passed through comprehensive Pydantic validation models. This ensures that the downstream PostgreSQL database only receives clean, strongly-typed data.
 
 ### 4. Non-Blocking Database Layer

@@ -13,7 +13,7 @@ A high-performance backend microservice designed to asynchronously process recei
 **The Approach:** This microservice treats receipt processing as an asynchronous workflow. 
 - **Decoupled Ingestion:** Uploads immediately return a `task_id`, handing off the heavy LLM processing to a background worker.
 - **Background Processing:** Celery and Redis manage the task queue, ensuring concurrent execution and resilience against failures.
-- **Deterministic AI:** GPT-4o's structured output mode is utilized, backed by strict Pydantic validation to guarantee the database only receives clean, typed data.
+- **Schema-Constrained Extraction:** GPT-4o's structured output mode is utilized, backed by strict Pydantic validation to guarantee the database only receives clean, typed data.
 - **Non-blocking I/O:** The entire database layer uses `asyncpg` and SQLAlchemy 2.0, allowing the FastAPI web workers to maintain high throughput.
 
 ## Tech Stack
