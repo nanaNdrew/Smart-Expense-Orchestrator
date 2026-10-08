@@ -5,13 +5,15 @@ A high-performance backend microservice designed to asynchronously process recei
 ### Live Demo
 ![API Demo](./demo.webp)
 
-## Features
-- **Asynchronous Ingestion:** Upload endpoints immediately return a task ID, decoupling the ingestion phase from heavy LLM processing.
-- **Robust Background Processing:** Built with Celery and Redis to handle concurrent task processing and retries.
-- **AI Integration:** Leverages GPT-4o with structured output extraction for Merchants, Dates, Totals, Taxes, Currencies, and Line-Item breakdowns.
-- **Strict Data Validation:** Utilizes Pydantic to ensure all data from the LLM is correctly structured before hitting the database.
-- **Async Database:** Uses PostgreSQL with `asyncpg` and SQLAlchemy 2.0 for maximum non-blocking throughput.
-- **Production Ready DX:** Fully containerized with Docker, complete with a `Makefile`, Ruff linting, MyPy static typing, and automated integration tests via Pytest.
+## Problem and Approach
+
+**The Problem:** Extracting structured financial data (merchants, line items, taxes) from raw receipt images is traditionally error-prone and requires complex OCR pipelines. While LLMs (like GPT-4o) excel at this, their API calls are slow and can easily bottleneck a synchronous web server.
+
+**The Approach:** This microservice treats receipt processing as an asynchronous workflow. 
+- **Decoupled Ingestion:** Uploads immediately return a `task_id`, handing off the heavy LLM processing to a background worker.
+- **Background Processing:** Celery and Redis manage the task queue, ensuring concurrent execution and resilience against failures.
+- **Deterministic AI:** GPT-4o's structured output mode is utilized, backed by strict Pydantic validation to guarantee the database only receives clean, typed data.
+- **Non-blocking I/O:** The entire database layer uses `asyncpg` and SQLAlchemy 2.0, allowing the FastAPI web workers to maintain high throughput.
 
 ## Tech Stack
 - **Python 3.11+**
@@ -106,3 +108,9 @@ Tear down services:
 ```bash
 make down
 ```
+
+## Notes and Trade-offs
+
+- **Cost vs. Latency:** GPT-4o provides excellent extraction accuracy but at a higher token cost and latency compared to traditional OCR. For scale, routing simpler receipts to a faster, cheaper model could be implemented.
+- **State Management:** Currently, polling (`GET /receipts/{task_id}`) is required to fetch the final result. For a truly real-time client experience, implementing WebSockets or Server-Sent Events (SSE) would reduce unnecessary polling traffic.
+- **Storage:** Receipt images are encoded and sent directly to OpenAI. A production deployment would likely need an object storage layer (like AWS S3) to persist the raw images for auditing, debugging, or human-in-the-loop review.
